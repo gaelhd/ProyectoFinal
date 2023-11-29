@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($row && password_verify($password, $row['password'])) {
         echo "Login exitoso. ¡Bienvenido $username";
-        header("Location: ProyectoU4IoT.html");
+        header("Location: index.html");
     } else {
         echo "Credenciales incorrectas. Inténtalo de nuevo.";
         header("Location: login.html");

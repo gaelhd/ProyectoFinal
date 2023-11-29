@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tablero - Instituto Tecnológico de Nuevo León</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="raphael-2.1.4.min.js"></script>
+  <script src="justgage.js"></script>
+  <link rel="stylesheet" href="styleProyecto.css">
+</head>
+
+<body>
+  <div id="dashboard">
+    <h1>Instituto Tecnológico de Nuevo León</h1>
+    <h2>Infraestructura de Dispositivos Inteligentes</h2>
+    <h2>Profesor: Luis Alejandro Reynoso Guajardo</h2>
+    <h2>Proyecto Final U4</h2>
+
+	
+  </div>
+    <!-- Medidor de Humedad -->
+	<div class="gauge-container">
+		<h2>Humedad</h2>
+		<div id="humidityGauge" class="gauge"></div>
+		<!-- <input type="text" name="humoMedidor" id="humoMedidor" value="0"> -->
+	</div>
+
+	<!-- Medidor de Temperatura -->
+	<div class="gauge-container">
+		<h2>Temperatura</h2>
+		<div id="temperatureGauge" class="gauge"></div>
+		<!-- <input type="text" name="temperaturaMedidor" id="temperaturaMedidor" value="0"> -->
+	</div>
+	  
+	<div>
+	  <!-- Guardar en base de datos -->
+	  <button class="action-button" name="guardarDatos" onclick="guardarValores()">Guardar en Base de Datos</button>
+	  <!-- Botón de Exportar a CSV -->
+    <a href="descargar_csv.php" download class="action-button">Exportar a CSV</a>
+
+	</div>
+	<div>
+	  <!-- Botón de Valores Aleatorios -->
+	  <button id="randomValuesButton" class="action-button" onclick="setRandomValues()">Generar Valores Aleatorios</button>
+	  <!-- Para regresar -->
+	  <button id="regresarDatos" class="action-button" onclick="adiosDatos()">ADIOS</button>
+	</div>
+  
+
+
+<!-- JAVASCRIPT -->
+
+  <script>
+    var accessToken = "016e24d011dfe16238a4ffd24fa2230146947513";
+    var deviceID = "480027000f51373331333230";
+	
+	var randomHumidity;
+    var randomTemperature;
+
+    // Humedad
+    var humidityUrl = "https://api.particle.io/v1/devices/" + deviceID + "/humedad";
+    function humidityCallback(data, status) {
+      if (status == "success") {
+        humidity = parseFloat(data.result);
+        humidity = humidity.toFixed(2);
+        humidityGauge.refresh(humidity);
+        setTimeout(getHumidityReading, 1000);
+      } else {
+        alert("Hubo un problema");
+      }
+    }
+    function getHumidityReading() {
+      $.get(humidityUrl, { access_token: accessToken }, humidityCallback);
+    }
+
+    // Temperatura
+    var temperatureUrl = "https://api.particle.io/v1/devices/" + deviceID + "/tempC";
+    function temperatureCallback(data, status) {
+      if (status == "success") {
+        temperature = parseFloat(data.result);
+        temperature = temperature.toFixed(2);
+        temperatureGauge.refresh(temperature);
+        setTimeout(getTemperatureReading, 1000);
+      } else {
+        alert("Hubo un problema");
+      }
+    }
+    function getTemperatureReading() {
+      $.get(temperatureUrl, { access_token: accessToken }, temperatureCallback);
+    }
+
+    // Inicializar medidores
+    var humidityGauge = new JustGage({
+      id: "humidityGauge",
+      value: 0,
+      min: 0,
+      max: 100,
+      title: "Humedad (%)"
+    });
+    getHumidityReading();
+
+    var temperatureGauge = new JustGage({
+      id: "temperatureGauge",
+      value: 0,
+      min: 0,
+      max: 100,
+      title: "Temperatura (C)"
+    });
+    getTemperatureReading();
+
+    // Script para establecer valores aleatorios
+    function setRandomValues() {  
+      randomHumidity = getRandomInt(0, 100);
+      randomTemperature = getRandomInt(0, 100);
+
+      humidityGauge.refresh(randomHumidity);
+      temperatureGauge.refresh(randomTemperature);
+		  
+	  // Actualizar los valores en los input
+      document.getElementById("temperaturaMedidor").value = randomTemperature;
+      document.getElementById("humoMedidor").value = randomHumidity;
+    }
+	
+	function guardarValores() {
+		// Valores que deseas enviar
+
+		// Objeto con la configuración de la solicitud
+		var requestOptions = {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		  },
+		  body: 'humoMedidor=' + randomHumidity + '&temperaturaMedidor=' + randomTemperature,
+		};
+
+		// Realizar la solicitud HTTP usando fetch
+		fetch('server.php', requestOptions)
+		  .then(response => response.text())
+		  .then(data => {
+			console.log(data); // Puedes hacer algo con la respuesta del servidor PHP
+			alert(data);
+		  })
+		  .catch(error => console.error('Error:', error));
+	}
+
+    function adiosDatos(){
+      window.location.href="register.html";
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styleLogin.css">
+    <script>
+        function showAlert(message, redirect) {
+            alert(message);
+            if (redirect) {
+                window.location.href = redirect;
+            }
+        }
+
+        function validateForm() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            if (username.trim() === '' || password.trim() === '') {
+                showAlert('Por favor, completa todos los campos.');
+                return false;
+            }
+
+            if (password.length < 8) {
+                showAlert('La contraseña debe tener al menos 8 caracteres.');
+                return false;
+            }
+
+            // Si todas las validaciones pasan, puedes enviar el formulario
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Login</h1>
+    <div class="login-container">
+        <form action="login.php" method="post" onsubmit="return validateForm()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+            <button type="submit">Login</button>
+        </form>
+        <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a>.</p>
+    </div>
+</body>
+</html>
+

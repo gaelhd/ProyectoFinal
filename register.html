@@ -1,0 +1,46 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styleRegister.css">
+    <script>
+        function validateForm() {
+            // Obtener los valores de los campos
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Verificar si los campos están vacíos
+            if (username.trim() === '' || password.trim() === '') {
+                alert('Por favor, completa todos los campos.');
+                return false; // Detener el envío del formulario
+            }
+
+            // Verificar si la contraseña tiene al menos 8 caracteres
+            if (password.length < 8) {
+                alert('La contraseña debe tener al menos 8 caracteres.');
+                return false; // Detener el envío del formulario
+            }
+
+            // Si todas las validaciones pasan, permitir el envío del formulario
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Registro</h1> 
+    <div class="register-container">
+        <form action="register.php" method="post" onsubmit="return validateForm()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+            <button type="submit">Register</button>
+        </form>
+        <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a>.</p>
+    </div>
+</body>
+</html>
+
